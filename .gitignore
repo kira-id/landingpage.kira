@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+public/styles.css
 
 # debug
 npm-debug.log*
