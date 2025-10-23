@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./tailwind.css";
 
 export const metadata: Metadata = {
   title: "Kira.id Intelligence",
@@ -18,9 +19,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="stylesheet" href="/styles.css" />
-      </head>
       <body className="antialiased">{children}</body>
     </html>
   );
