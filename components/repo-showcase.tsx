@@ -1,19 +1,10 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { cache } from "react";
 
-import { ArrowUpRight, GitBranch, Star } from "lucide-react";
+import { RepoShowcaseClient } from "./repo-showcase-client";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-type Repo = {
+export type Repo = {
   name: string;
   description: string;
   stars: number;
@@ -24,10 +15,10 @@ type Repo = {
   tags: string[];
 };
 
-const repoYaml = readFileSync(
-  join(process.cwd(), "data/repos.yaml"),
-  "utf8"
-);
+type RepoLoadResult = {
+  repos: Repo[];
+  errorMessage?: string;
+};
 
 const parseYamlValue = (rawValue: string): string | number | string[] => {
   const value = rawValue.trim();
@@ -116,78 +107,49 @@ const parseRepoYaml = (yaml: string): Repo[] => {
   return repos;
 };
 
-const mockRepos = parseRepoYaml(repoYaml);
+const loadRepos = cache(async (): Promise<RepoLoadResult> => {
+  const repoDataUrl =
+    process.env.REPO_DATA_URL ??
+    process.env.NEXT_PUBLIC_REPO_DATA_URL ??
+    "./data/repos.yaml";
 
-export default function RepoShowcase() {
-  return (
-    <section className="relative z-10 bg-white pb-24 pt-10 sm:pt-16">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 sm:px-12 lg:px-24">
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {mockRepos.map((repo, index) => (
-            <Card
-              key={repo.name}
-              className="group relative overflow-hidden border-zinc-200/80 bg-white/80 shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4 hover:-translate-y-1 hover:border-sky-200 hover:shadow-xl"
-              style={{ animationDelay: `${index * 60}ms` }}
-            >
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-100/40 via-transparent to-violet-100/40" />
-              </div>
-              <CardHeader className="relative z-10 gap-3">
-                <CardTitle className="flex items-start justify-between text-left text-lg font-semibold text-zinc-900">
-                  <span className="flex-1 pr-2">{repo.name}</span>
-                  <Badge
-                    variant="secondary"
-                    className="border-transparent bg-sky-100 text-xs text-sky-700"
-                  >
-                    {repo.highlight}
-                  </Badge>
-                </CardTitle>
-                <CardDescription className="text-left text-sm text-zinc-600">
-                  {repo.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10 flex flex-col gap-4">
-                <div className="flex items-center gap-5 text-sm text-zinc-500">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Star className="size-4 text-amber-500" />
-                    {repo.stars.toLocaleString()} stars
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <GitBranch className="size-4 text-sky-500" />
-                    {repo.forks.toLocaleString()} forks
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="border-zinc-200/80 text-xs font-medium text-zinc-600"
-                  >
-                    {repo.language}
-                  </Badge>
-                  {repo.tags.map((tag) => (
-                    <Badge
-                      key={`${repo.name}-${tag}`}
-                      variant="outline"
-                      className="border-transparent bg-zinc-100 text-xs font-medium text-zinc-700"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="relative z-10 border-t border-dashed border-zinc-200/80 pt-5">
-                <a
-                  href={repo.href}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-sky-600 transition-colors hover:text-sky-700"
-                >
-                  View on GitHub
-                  <ArrowUpRight className="size-4" />
-                </a>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  let errorMessage: string | undefined;
+
+  if (repoDataUrl.startsWith("http://") || repoDataUrl.startsWith("https://")) {
+    try {
+      const response = await fetch(repoDataUrl, {
+        next: { revalidate: 60 * 30 }, // refresh remote data twice per hour
+      });
+
+      if (!response.ok) {
+        errorMessage =
+          "We couldn't refresh the latest repository highlights just now. Showing the saved list instead.";
+      } else {
+        const yaml = await response.text();
+        return {
+          repos: parseRepoYaml(yaml),
+          errorMessage,
+        };
+      }
+    } catch (error) {
+      console.error("[RepoShowcase] Unable to load repos from R2:", error);
+      errorMessage =
+        "We couldn't reach the live repository showcase. You're seeing the saved list for now.";
+    }
+  }
+
+  const filePath = repoDataUrl.startsWith("/")
+    ? repoDataUrl
+    : join(process.cwd(), repoDataUrl);
+
+  const fallbackYaml = await readFile(filePath, "utf8");
+  return {
+    repos: parseRepoYaml(fallbackYaml),
+    errorMessage,
+  };
+});
+
+export default async function RepoShowcase() {
+  const { repos, errorMessage } = await loadRepos();
+  return <RepoShowcaseClient repos={repos} errorMessage={errorMessage} />;
 }

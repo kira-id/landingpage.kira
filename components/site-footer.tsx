@@ -1,24 +1,31 @@
+import { ArrowUpRight } from "lucide-react";
+
 export default function SiteFooter() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-zinc-950 text-zinc-100">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center sm:px-12 lg:px-24">
-        <span className="text-sm font-semibold uppercase tracking-[0.4em] text-sky-400">
-          Partner With Us
-        </span>
-        <p className="max-w-3xl text-2xl font-semibold leading-relaxed text-zinc-50">
-          We are looking for serious tech investors&mdash;feel free to contact us.
-        </p>
-        <p className="text-lg text-zinc-300">
-          For any kind of inquiries, please reach out at
-          {" "}
+    <footer className="border-t border-white/20 bg-black/20 text-white/80 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-12 lg:px-24">
+        <div className="space-y-2 text-left">
+          <p className="text-xs font-semibold tracking-[0.32em] text-white/60">
+            Partner with us to shape the future of AGI.
+          </p>
+          <p className="text-sm leading-relaxed text-white/80">
+            We are looking for serious tech investors, feel free to contact us.
+          </p>
+        </div>
+        <div className="flex flex-col items-start gap-2 text-sm text-white/70 sm:items-end">
           <a
             href="mailto:hello@kira.id"
-            className="font-semibold text-sky-300 underline-offset-4 hover:text-sky-200 hover:underline"
+            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 font-medium text-white transition hover:border-white/40 hover:bg-white/20"
           >
-            hello@kira.id
+            Contact us
+            <ArrowUpRight className="size-4" />
           </a>
-          .
-        </p>
+          <span className="text-xs uppercase tracking-[0.24em] text-white/60">
+            hello@kira.id
+          </span>
+        </div>
       </div>
     </footer>
   );

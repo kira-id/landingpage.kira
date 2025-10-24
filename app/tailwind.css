@@ -178,3 +178,56 @@
     animation: pulse-glow 18s ease-in-out infinite;
   }
 }
+
+@layer components {
+  .repo-card {
+    opacity: 0;
+    transform: translateY(72px) scale(0.88) rotateX(8deg);
+    transform-origin: top center;
+    animation: repo-card-enter 900ms cubic-bezier(0.26, 0.57, 0.12, 1.04) forwards;
+    animation-play-state: paused;
+    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  [data-repo-visible="true"] .repo-card {
+    animation-play-state: running;
+  }
+
+  .repo-card:hover {
+    transform: translateY(-8px);
+  }
+}
+
+@layer utilities {
+  @keyframes repo-card-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(80px) scale(0.85) rotateX(12deg);
+      filter: blur(4px);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(-6px) scale(1.02) rotateX(-2deg);
+      filter: blur(0);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotateX(0);
+      filter: blur(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .repo-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  .repo-card:hover {
+    transform: none !important;
+  }
+}
