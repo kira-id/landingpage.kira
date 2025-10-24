@@ -17,13 +17,15 @@ type Particle = {
   vy: number;
 };
 
-const MIN_PARTICLES = 80;
-const MAX_PARTICLES = 150;
-const BASE_SPEED = 0.14;
-const CLICK_PARTICLES = 5;
-const FRICTION_IDLE = 0.988;
-const FRICTION_ACTIVE = 0.9;
-const MIN_FLOAT_SPEED = BASE_SPEED * 0.45;
+const MIN_PARTICLES = 90;
+const MAX_PARTICLES = 180;
+const BASE_SPEED = 0.34;
+const CLICK_BURST_COUNT = 10;
+const CLICK_SPEED = 1.1;
+const FRICTION_IDLE = 0.986;
+const FRICTION_ACTIVE = 0.965;
+const MIN_FLOAT_SPEED = BASE_SPEED * 0.7;
+const LINK_DISTANCE_OFFSET = 70;
 
 export default function PolygonAnimation({
   className,
@@ -53,7 +55,7 @@ export default function PolygonAnimation({
     let width = 0;
     let height = 0;
 
-    const randomSpeed = () => (Math.random() - 0.5) * BASE_SPEED * 2;
+    const randomSpeed = () => (Math.random() - 0.5) * BASE_SPEED * 2.2;
 
     const createParticle = (x?: number, y?: number): Particle => ({
       x: typeof x === "number" ? x : Math.random() * width,
@@ -75,13 +77,13 @@ export default function PolygonAnimation({
     };
 
     const seedParticles = () => {
-      const densityCount = Math.round((width * height) / 12000);
+      const densityCount = Math.round((width * height) / 9000);
       const targetCount = Math.max(
         MIN_PARTICLES,
         Math.min(MAX_PARTICLES, densityCount),
       );
-
       particles.length = 0;
+
       for (let i = 0; i < targetCount; i += 1) {
         particles.push(createParticle());
       }
@@ -89,10 +91,40 @@ export default function PolygonAnimation({
 
     const renderFrame = () => {
       context.clearRect(0, 0, width, height);
-      const linkDistance = Math.min(width, height) / 5 + 80;
-      const pointerRadius = linkDistance * 0.75;
+
+      const linkDistance = Math.min(width, height) / 4 + LINK_DISTANCE_OFFSET;
+      const pointerRadius = linkDistance * 0.68;
 
       for (const particle of particles) {
+        if (pointer.active) {
+          const dx = particle.x - pointer.x;
+          const dy = particle.y - pointer.y;
+          const distanceSquared = dx * dx + dy * dy;
+          const radiusSquared = pointerRadius * pointerRadius;
+
+          if (distanceSquared < radiusSquared && distanceSquared > 1) {
+            const distance = Math.sqrt(distanceSquared);
+            const force = 1 - distance / pointerRadius;
+            const strength = force * 0.38;
+            particle.vx += (dx / distance) * strength;
+            particle.vy += (dy / distance) * strength;
+          }
+        }
+
+        const friction = pointer.active ? FRICTION_ACTIVE : FRICTION_IDLE;
+        particle.vx *= friction;
+        particle.vy *= friction;
+
+        const speed = Math.hypot(particle.vx, particle.vy);
+        if (speed < MIN_FLOAT_SPEED) {
+          const direction =
+            speed > 0
+              ? Math.atan2(particle.vy, particle.vx)
+              : Math.random() * Math.PI * 2;
+          particle.vx += Math.cos(direction) * (MIN_FLOAT_SPEED - speed);
+          particle.vy += Math.sin(direction) * (MIN_FLOAT_SPEED - speed);
+        }
+
         particle.x += particle.vx;
         particle.y += particle.vy;
 
@@ -106,41 +138,9 @@ export default function PolygonAnimation({
           particle.y = Math.min(Math.max(particle.y, 0), height);
         }
 
-        if (pointer.active) {
-          const dx = particle.x - pointer.x;
-          const dy = particle.y - pointer.y;
-          const distanceSquared = dx * dx + dy * dy;
-          const radiusSquared = pointerRadius * pointerRadius;
-
-          if (distanceSquared < radiusSquared && distanceSquared > 0.001) {
-            const distance = Math.sqrt(distanceSquared);
-            const force = ((pointerRadius - distance) / pointerRadius) * 0.5;
-            particle.vx += (dx / distance) * force * 0.22;
-            particle.vy += (dy / distance) * force * 0.22;
-          }
-        }
-
-        const friction = pointer.active ? FRICTION_ACTIVE : FRICTION_IDLE;
-        particle.vx *= friction;
-        particle.vy *= friction;
-
-        if (!pointer.active) {
-          const speed = Math.hypot(particle.vx, particle.vy);
-
-          if (speed < 1e-3) {
-            const angle = Math.random() * Math.PI * 2;
-            particle.vx = Math.cos(angle) * MIN_FLOAT_SPEED;
-            particle.vy = Math.sin(angle) * MIN_FLOAT_SPEED;
-          } else if (speed < MIN_FLOAT_SPEED) {
-            const scale = MIN_FLOAT_SPEED / speed;
-            particle.vx *= scale;
-            particle.vy *= scale;
-          }
-        }
-
         context.beginPath();
-        context.arc(particle.x, particle.y, 2.2, 0, Math.PI * 2);
-        context.fillStyle = "rgba(14, 165, 233, 0.75)";
+        context.arc(particle.x, particle.y, 2.4, 0, Math.PI * 2);
+        context.fillStyle = "rgba(14, 165, 233, 0.82)";
         context.fill();
       }
 
@@ -158,7 +158,10 @@ export default function PolygonAnimation({
             context.beginPath();
             context.moveTo(particle.x, particle.y);
             context.lineTo(target.x, target.y);
-            context.strokeStyle = `rgba(14, 165, 233, ${opacity * 0.75})`;
+            context.strokeStyle = `rgba(14, 165, 233, ${Math.min(
+              opacity * 0.8,
+              0.7,
+            )})`;
             context.lineWidth = 1;
             context.stroke();
           }
@@ -174,7 +177,7 @@ export default function PolygonAnimation({
           pointer.y,
           pointerRadius,
         );
-        gradient.addColorStop(0, "rgba(8, 145, 178, 0.25)");
+        gradient.addColorStop(0, "rgba(8, 145, 178, 0.28)");
         gradient.addColorStop(0.6, "rgba(14, 165, 233, 0.12)");
         gradient.addColorStop(1, "rgba(14, 165, 233, 0)");
 
@@ -230,19 +233,18 @@ export default function PolygonAnimation({
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const particles = particlesRef.current;
-      for (let i = 0; i < CLICK_PARTICLES; i += 1) {
+
+      for (let i = 0; i < CLICK_BURST_COUNT; i += 1) {
         particles.push({
           x,
           y,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: (Math.random() - 0.5) * 0.6,
+          vx: (Math.random() - 0.5) * CLICK_SPEED * 2,
+          vy: (Math.random() - 0.5) * CLICK_SPEED * 2,
         });
       }
+
       if (particles.length > MAX_PARTICLES) {
-        particles.splice(
-          0,
-          particles.length - Math.max(MIN_PARTICLES, MAX_PARTICLES - 15),
-        );
+        particles.splice(0, particles.length - MAX_PARTICLES);
       }
     },
     [],
@@ -254,8 +256,8 @@ export default function PolygonAnimation({
       className={cn(
         "relative min-h-[24rem] w-full overflow-hidden",
         variant === "framed"
-          ? "rounded-3xl border border-sky-100/80 bg-gradient-to-br from-white via-sky-50/70 to-white shadow-lg shadow-sky-100/40"
-          : "",
+          ? "rounded-3xl border border-sky-100/80 bg-white shadow-lg shadow-sky-100/40"
+          : "bg-transparent",
         className,
       )}
       onPointerMove={handlePointerMove}
@@ -264,22 +266,6 @@ export default function PolygonAnimation({
       aria-label="Interactive polygon particle field"
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0",
-          variant === "framed"
-            ? "bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.12),_transparent_60%)]"
-            : "bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.08),_transparent_65%)]",
-        )}
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0",
-          variant === "framed"
-            ? "bg-[radial-gradient(circle_at_bottom,_rgba(96,165,250,0.16),_transparent_70%)]"
-            : "bg-[radial-gradient(circle_at_bottom,_rgba(14,165,233,0.12),_transparent_70%)]",
-        )}
-      />
     </div>
   );
 }
