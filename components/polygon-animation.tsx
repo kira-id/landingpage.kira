@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 type PolygonAnimationProps = {
   className?: string;
+  variant?: "bare" | "framed";
 };
 
 type Particle = {
@@ -18,11 +19,16 @@ type Particle = {
 
 const MIN_PARTICLES = 80;
 const MAX_PARTICLES = 150;
-const BASE_SPEED = 0.12;
+const BASE_SPEED = 0.14;
 const CLICK_PARTICLES = 5;
-const FRICTION = 0.94;
+const FRICTION_IDLE = 0.988;
+const FRICTION_ACTIVE = 0.9;
+const MIN_FLOAT_SPEED = BASE_SPEED * 0.45;
 
-export default function PolygonAnimation({ className }: PolygonAnimationProps) {
+export default function PolygonAnimation({
+  className,
+  variant = "bare",
+}: PolygonAnimationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
@@ -111,10 +117,25 @@ export default function PolygonAnimation({ className }: PolygonAnimationProps) {
             const force = ((pointerRadius - distance) / pointerRadius) * 0.5;
             particle.vx += (dx / distance) * force * 0.22;
             particle.vy += (dy / distance) * force * 0.22;
+          }
         }
 
-        particle.vx *= FRICTION;
-        particle.vy *= FRICTION;
+        const friction = pointer.active ? FRICTION_ACTIVE : FRICTION_IDLE;
+        particle.vx *= friction;
+        particle.vy *= friction;
+
+        if (!pointer.active) {
+          const speed = Math.hypot(particle.vx, particle.vy);
+
+          if (speed < 1e-3) {
+            const angle = Math.random() * Math.PI * 2;
+            particle.vx = Math.cos(angle) * MIN_FLOAT_SPEED;
+            particle.vy = Math.sin(angle) * MIN_FLOAT_SPEED;
+          } else if (speed < MIN_FLOAT_SPEED) {
+            const scale = MIN_FLOAT_SPEED / speed;
+            particle.vx *= scale;
+            particle.vy *= scale;
+          }
         }
 
         context.beginPath();
@@ -231,7 +252,10 @@ export default function PolygonAnimation({ className }: PolygonAnimationProps) {
     <div
       ref={containerRef}
       className={cn(
-        "relative h-96 w-full overflow-hidden rounded-3xl border border-sky-100/80 bg-gradient-to-br from-white via-sky-50/70 to-white shadow-lg shadow-sky-100/40",
+        "relative min-h-[24rem] w-full overflow-hidden",
+        variant === "framed"
+          ? "rounded-3xl border border-sky-100/80 bg-gradient-to-br from-white via-sky-50/70 to-white shadow-lg shadow-sky-100/40"
+          : "",
         className,
       )}
       onPointerMove={handlePointerMove}
@@ -240,8 +264,22 @@ export default function PolygonAnimation({ className }: PolygonAnimationProps) {
       aria-label="Interactive polygon particle field"
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.12),_transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(96,165,250,0.16),_transparent_70%)]" />
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-0",
+          variant === "framed"
+            ? "bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.12),_transparent_60%)]"
+            : "bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.08),_transparent_65%)]",
+        )}
+      />
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-0",
+          variant === "framed"
+            ? "bg-[radial-gradient(circle_at_bottom,_rgba(96,165,250,0.16),_transparent_70%)]"
+            : "bg-[radial-gradient(circle_at_bottom,_rgba(14,165,233,0.12),_transparent_70%)]",
+        )}
+      />
     </div>
   );
 }
