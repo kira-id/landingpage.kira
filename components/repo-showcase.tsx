@@ -1,5 +1,6 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { cache } from "react";
 
 import { RepoShowcaseClient } from "./repo-showcase-client";
 
@@ -14,10 +15,10 @@ export type Repo = {
   tags: string[];
 };
 
-const repoYaml = readFileSync(
-  join(process.cwd(), "data/repos.yaml"),
-  "utf8"
-);
+type RepoLoadResult = {
+  repos: Repo[];
+  errorMessage?: string;
+};
 
 const parseYamlValue = (rawValue: string): string | number | string[] => {
   const value = rawValue.trim();
@@ -106,8 +107,49 @@ const parseRepoYaml = (yaml: string): Repo[] => {
   return repos;
 };
 
-const mockRepos = parseRepoYaml(repoYaml);
+const loadRepos = cache(async (): Promise<RepoLoadResult> => {
+  const repoDataUrl =
+    process.env.REPO_DATA_URL ??
+    process.env.NEXT_PUBLIC_REPO_DATA_URL ??
+    "./data/repos.yaml";
 
-export default function RepoShowcase() {
-  return <RepoShowcaseClient repos={mockRepos} />;
+  let errorMessage: string | undefined;
+
+  if (repoDataUrl.startsWith("http://") || repoDataUrl.startsWith("https://")) {
+    try {
+      const response = await fetch(repoDataUrl, {
+        next: { revalidate: 60 * 30 }, // refresh remote data twice per hour
+      });
+
+      if (!response.ok) {
+        errorMessage =
+          "We couldn't refresh the latest repository highlights just now. Showing the saved list instead.";
+      } else {
+        const yaml = await response.text();
+        return {
+          repos: parseRepoYaml(yaml),
+          errorMessage,
+        };
+      }
+    } catch (error) {
+      console.error("[RepoShowcase] Unable to load repos from R2:", error);
+      errorMessage =
+        "We couldn't reach the live repository showcase. You're seeing the saved list for now.";
+    }
+  }
+
+  const filePath = repoDataUrl.startsWith("/")
+    ? repoDataUrl
+    : join(process.cwd(), repoDataUrl);
+
+  const fallbackYaml = await readFile(filePath, "utf8");
+  return {
+    repos: parseRepoYaml(fallbackYaml),
+    errorMessage,
+  };
+});
+
+export default async function RepoShowcase() {
+  const { repos, errorMessage } = await loadRepos();
+  return <RepoShowcaseClient repos={repos} errorMessage={errorMessage} />;
 }

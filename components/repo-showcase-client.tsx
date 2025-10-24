@@ -18,9 +18,13 @@ import type { Repo } from "./repo-showcase";
 
 type RepoShowcaseClientProps = {
   repos: Repo[];
+  errorMessage?: string;
 };
 
-export function RepoShowcaseClient({ repos }: RepoShowcaseClientProps) {
+export function RepoShowcaseClient({
+  repos,
+  errorMessage,
+}: RepoShowcaseClientProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -58,6 +62,11 @@ export function RepoShowcaseClient({ repos }: RepoShowcaseClientProps) {
       data-repo-visible={isVisible ? "true" : "false"}
     >
       <div className="mx-auto flex w-full flex-col gap-14 px-8 sm:px-14 lg:px-28">
+        {errorMessage ? (
+          <div className="rounded-2xl border border-amber-300/80 bg-amber-50/80 p-4 text-sm font-medium text-amber-800 shadow-sm shadow-amber-200/60">
+            {errorMessage}
+          </div>
+        ) : null}
         <div className="grid auto-rows-fr gap-16 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {repos.map((repo, index) => (
             <div
