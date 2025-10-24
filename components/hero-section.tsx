@@ -2,21 +2,32 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import PolygonAnimation from "@/components/polygon-animation";
 
 export default function HeroSection() {
   const [headlineHovered, setHeadlineHovered] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const cardOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const cardY = useTransform(scrollYProgress, [0, 0.75], [0, -120]);
 
   return (
-    <section className="relative flex min-h-[110vh] items-center justify-center overflow-hidden bg-white px-6 pb-32 pt-20 sm:px-12 lg:px-24">
-      <PolygonAnimation
-        variant="bare"
-        className="pointer-events-auto absolute inset-x-0 bottom-28 top-20 h-auto w-full opacity-90"
-      />
+    <motion.section
+      ref={sectionRef}
+      className="relative z-10 flex min-h-[110vh] items-center justify-center overflow-hidden px-6 pb-32 pt-20 sm:px-12 sm:pt-24 lg:px-24 lg:pt-28"
+    >
+      <div className="pointer-events-auto fixed inset-x-0 bottom-0 -z-10 top-10 opacity-90 sm:top-14 lg:top-18">
+        <PolygonAnimation variant="bare" className="h-full w-full" />
+      </div>
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 hidden items-center justify-between px-10 py-4 sm:flex">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 hidden items-center justify-between border-b border-white/15 bg-white/15 px-10 py-4 shadow-sm shadow-sky-100/10 backdrop-blur-md sm:flex">
         <div className="flex items-center gap-3">
           <Image
             src="/kira.svg"
@@ -34,7 +45,10 @@ export default function HeroSection() {
         </span>
       </div>
 
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 text-center pointer-events-auto rounded-[2.5rem] border border-white/15 bg-white/15 px-14 py-14 shadow-xl shadow-sky-100/5 backdrop-blur-sm">
+      <motion.div
+        className="pointer-events-auto relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 text-center rounded-[2.5rem] border border-white/15 bg-white/15 px-14 py-14 shadow-xl shadow-sky-100/5 backdrop-blur-sm"
+        style={{ opacity: cardOpacity, y: cardY }}
+      >
         <Image
           src="/kira.svg"
           alt="Kira logo"
@@ -65,9 +79,7 @@ export default function HeroSection() {
           </span>{" "}
           and making it useful, safe and accessible to everyone
         </p>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
-
-

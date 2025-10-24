@@ -120,7 +120,7 @@ const mockRepos = parseRepoYaml(repoYaml);
 
 export default function RepoShowcase() {
   return (
-    <section className="relative z-10 bg-white pb-24 pt-10 sm:pt-16">
+    <section className="bg-white pb-24 pt-10 sm:pt-16">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 sm:px-12 lg:px-24">
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {mockRepos.map((repo, index) => (
