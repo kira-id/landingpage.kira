@@ -4,19 +4,9 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-
-import { BRAND_BACKGROUND_COLOR } from "@/lib/theme";
-
-const HEADLINE_ROTATION_INTERVAL = 2400;
-const INITIAL_ROTATION_DELAY = 1600;
+import { HEADLINES, HEADLINE_ROTATION_INTERVAL, INITIAL_ROTATION_DELAY } from "@/lib/theme";
 
 export default function HeroSection() {
-  const HEADLINES = [
-    "Kira.id Intelligence",
-    "We are open-source research",
-    "Focusing on solving Artificial General Intelligence",
-    "Making it useful, safe and accessible to everyone",
-  ];
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const sectionRef = useRef<HTMLElement | null>(null);
   const intervalRef = useRef<number | null>(null);
@@ -74,9 +64,8 @@ export default function HeroSection() {
     <motion.section
       ref={sectionRef}
       className="relative z-10 flex min-h-screen items-center justify-center overflow-hidden px-4 pb-0 pt-16 text-zinc-100 sm:px-8 sm:pt-20 lg:px-16 lg:pt-24"
-      style={{ backgroundColor: BRAND_BACKGROUND_COLOR }}
     >
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 hidden items-center justify-between border-b border-white/20 bg-white/10 px-10 py-4 shadow-lg shadow-black/10 backdrop-blur-xl sm:flex">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 hidden items-center justify-between bg-white/5 px-10 py-4 shadow-lg shadow-black/10 backdrop-blur-m  sm:flex">
         <div className="flex items-center gap-3">
           <Image
             src="/kira.svg"
@@ -110,7 +99,7 @@ export default function HeroSection() {
                   animate={{ y: "0%", opacity: 1, rotateX: 0, filter: "blur(0px)" }}
                   exit={{ y: "-50%", opacity: 0, rotateX: -15, filter: "blur(8px)" }}
                   transition={{ duration: 0.9, ease: [0.19, 1, 0.22, 1] }}
-                  className="block w-full whitespace-normal text-balance will-change-transform"
+                  className="block w-full whitespace-normal text-balance [text-shadow:0_18px_48px_rgba(0,0,0,0.3)] will-change-transform"
                 >
                   {HEADLINES[headlineIndex]}
                 </motion.span>
