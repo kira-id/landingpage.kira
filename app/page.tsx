@@ -4,7 +4,7 @@ import SiteFooter from "@/components/site-footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-zinc-900 antialiased">
+    <div className="min-h-screen bg-zinc-950 text-zinc-900 antialiased">
       <HeroSection />
       <div className="mt-4 sm:mt-8">
         <RepoShowcase />
