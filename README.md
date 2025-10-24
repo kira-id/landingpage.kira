@@ -19,7 +19,7 @@ Open-source code for the **Kira** marketing site.
 
 ### Prerequisites
 - Node.js **18+** (LTS recommended)
-- Package manager: **pnpm** (preferred) or **npm**/**yarn**
+- Package manager: **npm** (preferred) or **pnpm**/**yarn**
 
 ### Setup
 
@@ -29,82 +29,23 @@ git clone https://github.com/kira-id/landingpage.kira
 cd landingpage.kira
 
 # 2) Install deps
-pnpm install
-# or: npm install
+npm install
+# or: pnpm install
 # or: yarn
 
-# 3) (Optional) Configure env (see .env.example below)
+# 3) (Optional) Configure env (see .env.example if needed)
 # cp .env.example .env.local
 
 # 4) Run dev server
-pnpm dev
-# or: npm run dev
+npm run dev
+# or: pnpm dev
 # or: yarn dev
 # open http://localhost:3000
 
 # 5) Build for production
-pnpm build
-pnpm start
+npm run build
+npm run start
 ```
-
-## Environment Variables
-
-For a simple landing page, you typically need **no env vars** unless you enable analytics, forms, or error tracking. Use this as a safe starting point:
-
-```env
-# ---- Basic site config (recommended) ----
-NEXT_PUBLIC_SITE_URL=https://kira.id
-NEXT_PUBLIC_APP_NAME=Kira
-NEXT_PUBLIC_ENV=production
-
-# ---- Analytics (pick ONE provider and remove the rest) ----
-# Plausible
-NEXT_PUBLIC_PLAUSIBLE_DOMAIN=kira.id
-NEXT_PUBLIC_PLAUSIBLE_API_HOST=https://plausible.io
-
-# Umami
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=
-NEXT_PUBLIC_UMAMI_HOST=https://analytics.example.com
-
-# Google Analytics 4
-NEXT_PUBLIC_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
-
-# PostHog
-NEXT_PUBLIC_POSTHOG_KEY=
-NEXT_PUBLIC_POSTHOG_HOST=https://us.posthog.com
-
-# ---- Forms / email (optional) ----
-# If you have a contact form handled by an API route using Resend
-RESEND_API_KEY=
-CONTACT_TO_EMAIL=hello@kira.id
-
-# (or) External form backend
-# FORMSPREE_ENDPOINT=https://formspree.io/f/xxxxxx
-
-# ---- Bot protection (optional) ----
-# Cloudflare Turnstile
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=
-TURNSTILE_SECRET_KEY=
-
-# (or) Google reCAPTCHA v3
-# NEXT_PUBLIC_RECAPTCHA_SITE_KEY=
-# RECAPTCHA_SECRET_KEY=
-
-# ---- Error monitoring (optional) ----
-# Sentry
-NEXT_PUBLIC_SENTRY_DSN=
-SENTRY_AUTH_TOKEN=
-SENTRY_ORG=
-SENTRY_PROJECT=
-```
-
-**How to use:**
-1. Copy to `.env.local`: `cp .env.example .env.local`
-2. Fill only what you enable.
-3. **Never commit** `.env.local`.
-4. On Vercel: Project → Settings → **Environment Variables** → add the same keys for Production/Preview.
-
-> Anything read in the **browser** must start with `NEXT_PUBLIC_...`. Server-only secrets (e.g., `RESEND_API_KEY`) should **not** be prefixed and should only be used in API routes / server components.
 
 ## Project Structure (typical)
 
@@ -135,8 +76,8 @@ SENTRY_PROJECT=
 
 Typical commands:
 ```bash
-pnpm build && pnpm start
-# or: npm run build && npm run start
+npm run build && npm run start
+# or: pnpm build && pnpm start
 # or: yarn build && yarn start
 ```
 
@@ -150,8 +91,8 @@ Usually **no**. If you enable analytics, forms, or monitoring, copy `.env.exampl
 
 **How do I run it locally?**  
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 # open http://localhost:3000
 ```
 Requires Node.js **18+**.
