@@ -1,9 +1,9 @@
-
 "use client";
 
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 
 import PolygonAnimation from "@/components/polygon-animation";
 
@@ -17,11 +17,13 @@ export default function HeroSection() {
 
   const cardOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const cardY = useTransform(scrollYProgress, [0, 0.75], [0, -120]);
+  const exploreOpacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
+  const exploreY = useTransform(scrollYProgress, [0.1, 0.3], [24, 0]);
 
   return (
     <motion.section
       ref={sectionRef}
-      className="relative z-10 flex min-h-[110vh] items-center justify-center overflow-hidden px-6 pb-32 pt-20 sm:px-12 sm:pt-24 lg:px-24 lg:pt-28"
+      className="relative z-10 flex min-h-[90vh] items-center justify-center overflow-hidden px-6 pb-8 pt-20 sm:px-12 sm:pt-24 lg:px-24 lg:pt-28"
     >
       <div className="pointer-events-auto fixed inset-x-0 bottom-0 -z-10 top-10 opacity-90 sm:top-14 lg:top-18">
         <PolygonAnimation variant="bare" className="h-full w-full" />
@@ -79,6 +81,16 @@ export default function HeroSection() {
           </span>{" "}
           and making it useful, safe and accessible to everyone
         </p>
+      </motion.div>
+
+      <motion.div
+        className="pointer-events-none absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2"
+        style={{ opacity: exploreOpacity, y: exploreY }}
+      >
+        <span className="rounded-full border border-sky-200/60 bg-white/90 px-5 py-1.5 text-sm font-semibold uppercase tracking-[0.2em] text-sky-700 shadow-lg shadow-sky-100/60">
+          EXPLORE OUR REPOS
+        </span>
+        <ArrowDown className="size-6 text-sky-500 animate-bounce" />
       </motion.div>
     </motion.section>
   );

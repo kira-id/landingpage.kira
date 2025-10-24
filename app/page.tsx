@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-zinc-900 antialiased">
       <HeroSection />
-      <div className="mt-16 sm:mt-24">
+      <div className="mt-4 sm:mt-8">
         <RepoShowcase />
       </div>
       <SiteFooter />

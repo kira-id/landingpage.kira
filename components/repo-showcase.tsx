@@ -122,69 +122,69 @@ export default function RepoShowcase() {
   return (
     <section className="bg-white pb-24 pt-10 sm:pt-16">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 sm:px-12 lg:px-24">
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid auto-rows-fr gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {mockRepos.map((repo, index) => (
-            <Card
+            <div
               key={repo.name}
-              className="group relative overflow-hidden border-zinc-200/80 bg-white/80 shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-4 hover:-translate-y-1 hover:border-sky-200 hover:shadow-xl"
+              className="group relative h-full animate-in fade-in slide-in-from-bottom-4"
               style={{ animationDelay: `${index * 60}ms` }}
             >
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-100/40 via-transparent to-violet-100/40" />
-              </div>
-              <CardHeader className="relative z-10 gap-3">
-                <CardTitle className="flex items-start justify-between text-left text-lg font-semibold text-zinc-900">
-                  <span className="flex-1 pr-2">{repo.name}</span>
-                  <Badge
-                    variant="secondary"
-                    className="border-transparent bg-sky-100 text-xs text-sky-700"
-                  >
-                    {repo.highlight}
-                  </Badge>
-                </CardTitle>
-                <CardDescription className="text-left text-sm text-zinc-600">
-                  {repo.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10 flex flex-col gap-4">
-                <div className="flex items-center gap-5 text-sm text-zinc-500">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Star className="size-4 text-amber-500" />
-                    {repo.stars.toLocaleString()} stars
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <GitBranch className="size-4 text-sky-500" />
-                    {repo.forks.toLocaleString()} forks
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="border-zinc-200/80 text-xs font-medium text-zinc-600"
-                  >
-                    {repo.language}
-                  </Badge>
-                  {repo.tags.map((tag) => (
+              <div className="pointer-events-none absolute inset-0 z-0 rounded-xl bg-gradient-to-br from-sky-200/40 via-white/30 to-violet-200/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <Card className="relative z-10 flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-xl">
+                <CardHeader className="relative z-10 gap-3">
+                  <CardTitle className="flex items-start justify-between text-left text-lg font-semibold text-zinc-900">
+                    <span className="flex-1 pr-2">{repo.name}</span>
                     <Badge
-                      key={`${repo.name}-${tag}`}
-                      variant="outline"
-                      className="border-transparent bg-zinc-100 text-xs font-medium text-zinc-700"
+                      variant="secondary"
+                      className="border-transparent bg-sky-100 text-xs text-sky-700"
                     >
-                      {tag}
+                      {repo.highlight}
                     </Badge>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="relative z-10 border-t border-dashed border-zinc-200/80 pt-5">
-                <a
-                  href={repo.href}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-sky-600 transition-colors hover:text-sky-700"
-                >
-                  View on GitHub
-                  <ArrowUpRight className="size-4" />
-                </a>
-              </CardFooter>
-            </Card>
+                  </CardTitle>
+                  <CardDescription className="text-left text-sm text-zinc-600">
+                    {repo.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="relative z-10 flex flex-col gap-4">
+                  <div className="flex items-center gap-5 text-sm text-zinc-500">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Star className="size-4 text-amber-500" />
+                      {repo.stars.toLocaleString()} stars
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <GitBranch className="size-4 text-sky-500" />
+                      {repo.forks.toLocaleString()} forks
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className="border-zinc-200/80 text-xs font-medium text-zinc-600"
+                    >
+                      {repo.language}
+                    </Badge>
+                    {repo.tags.map((tag) => (
+                      <Badge
+                        key={`${repo.name}-${tag}`}
+                        variant="outline"
+                        className="border-transparent bg-zinc-100 text-xs font-medium text-zinc-700"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="relative z-10 border-t border-dashed border-zinc-200/80 pt-5">
+                  <a
+                    href={repo.href}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-sky-600 transition-colors hover:text-sky-700"
+                  >
+                    View on GitHub
+                    <ArrowUpRight className="size-4" />
+                  </a>
+                </CardFooter>
+              </Card>
+            </div>
           ))}
         </div>
       </div>
