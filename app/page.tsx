@@ -7,7 +7,7 @@ import { BRAND_FONT_FAMILY } from "@/lib/theme";
 export default function Home() {
   return (
     <div
-      className="relative min-h-screen flex flex-col text-zinc-900 antialiased"
+      className="relative min-h-[100dvh] flex flex-col text-zinc-900 antialiased"
       style={{
         fontFamily: BRAND_FONT_FAMILY,
       }}
