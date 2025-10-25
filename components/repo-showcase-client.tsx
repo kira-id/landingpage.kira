@@ -30,7 +30,21 @@ export function RepoShowcaseClient({
 
   useEffect(() => {
     const sectionEl = sectionRef.current;
-    if (!sectionEl) {
+    if (!sectionEl || typeof window === "undefined") {
+      return;
+    }
+
+    const prefersReducedMotion = window
+      .matchMedia("(prefers-reduced-motion: reduce)")
+      .matches;
+    const isSmallViewport = window.matchMedia("(max-width: 768px)").matches;
+
+    if (prefersReducedMotion || isSmallViewport) {
+      // Skip the entrance animation when motion is reduced or on small screens.
+      setIsVisible(true);
+    }
+
+    if (!("IntersectionObserver" in window)) {
       return;
     }
 
@@ -44,7 +58,8 @@ export function RepoShowcaseClient({
         });
       },
       {
-        threshold: 0.3,
+        threshold: 0.2,
+        rootMargin: "0px 0px -20%",
       }
     );
 
@@ -67,16 +82,16 @@ export function RepoShowcaseClient({
             {errorMessage}
           </div>
         ) : null}
-        <div className="grid auto-rows-fr gap-16 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-16 md:auto-rows-fr md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {repos.map((repo, index) => (
             <div
               key={repo.name}
               className="repo-card group relative h-full"
               style={{ animationDelay: `${index * 110}ms` }}
             >
-              <Card className="relative z-10 flex h-full flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/80 p-7 shadow-[0_24px_80px_-50px_rgba(37,99,235,0.45)] transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_48px_120px_-60px_rgba(14,165,233,0.65)] sm:p-8">
-                <div className="pointer-events-none absolute inset-px rounded-[26px] bg-gradient-to-br from-sky-50 via-white to-indigo-50 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <CardHeader className="relative z-10 flex flex-col gap-6 p-0">
+              <Card className="relative flex h-full flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/80 p-7 shadow-[0_24px_80px_-50px_rgba(37,99,235,0.45)] transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_48px_120px_-60px_rgba(14,165,233,0.65)] sm:p-8">
+                <div className="pointer-events-none absolute inset-px -z-10 rounded-[26px] bg-gradient-to-br from-sky-50 via-white to-indigo-50 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <CardHeader className="relative flex flex-col gap-6 p-0">
                   <div className="flex items-start justify-between gap-4">
                     <Badge className="rounded-full border border-sky-200/70 bg-sky-500/10 px-3 py-[6px] text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">
                       {repo.highlight}
@@ -95,7 +110,7 @@ export function RepoShowcaseClient({
                     </CardDescription>
                   </div>
                 </CardHeader>
-                <CardContent className="relative z-10 flex flex-col gap-6 p-0">
+                <CardContent className="relative flex flex-col gap-6 p-0">
                   <div className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2">
                     <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm shadow-slate-200/60">
                       <div className="flex items-center justify-between text-sm font-medium text-slate-500">
@@ -127,7 +142,7 @@ export function RepoShowcaseClient({
                     ))}
                   </div>
                 </CardContent>
-                <CardFooter className="relative z-10 mt-auto flex items-center justify-between gap-4 p-0">
+                <CardFooter className="relative mt-auto flex items-center justify-between gap-4 p-0">
                   <span className="text-sm font-medium text-slate-500">
                     Focus: {repo.tags[0] ?? repo.language}
                   </span>
@@ -136,7 +151,7 @@ export function RepoShowcaseClient({
                     className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-700"
                   >
                     View on GitHub
-                    <ArrowUpRight className="size-5" />
+                    <ArrowUpRight className="size-4" />
                   </a>
                 </CardFooter>
               </Card>
