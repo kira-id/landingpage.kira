@@ -30,7 +30,21 @@ export function RepoShowcaseClient({
 
   useEffect(() => {
     const sectionEl = sectionRef.current;
-    if (!sectionEl) {
+    if (!sectionEl || typeof window === "undefined") {
+      return;
+    }
+
+    const prefersReducedMotion = window
+      .matchMedia("(prefers-reduced-motion: reduce)")
+      .matches;
+    const isSmallViewport = window.matchMedia("(max-width: 768px)").matches;
+
+    if (prefersReducedMotion || isSmallViewport) {
+      // Skip the entrance animation when motion is reduced or on small screens.
+      setIsVisible(true);
+    }
+
+    if (!("IntersectionObserver" in window)) {
       return;
     }
 
@@ -44,7 +58,8 @@ export function RepoShowcaseClient({
         });
       },
       {
-        threshold: 0.3,
+        threshold: 0.2,
+        rootMargin: "0px 0px -20%",
       }
     );
 
@@ -67,7 +82,7 @@ export function RepoShowcaseClient({
             {errorMessage}
           </div>
         ) : null}
-        <div className="grid auto-rows-fr gap-16 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-16 md:auto-rows-fr md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {repos.map((repo, index) => (
             <div
               key={repo.name}
@@ -136,7 +151,7 @@ export function RepoShowcaseClient({
                     className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-700"
                   >
                     View on GitHub
-                    <ArrowUpRight className="size-5" />
+                    <ArrowUpRight className="size-4" />
                   </a>
                 </CardFooter>
               </Card>
