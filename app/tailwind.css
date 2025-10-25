@@ -181,20 +181,28 @@
 
 @layer components {
   .repo-card {
-    opacity: 0;
-    transform: translateY(72px) scale(0.88) rotateX(8deg);
-    transform-origin: top center;
-    animation: repo-card-enter 900ms cubic-bezier(0.26, 0.57, 0.12, 1.04) forwards;
-    animation-play-state: paused;
+    opacity: 1;
+    transform: none;
     transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  [data-repo-visible="true"] .repo-card {
-    animation-play-state: running;
+    will-change: transform, opacity;
   }
 
   .repo-card:hover {
     transform: translateY(-8px);
+  }
+
+  @media (min-width: 768px) {
+    .repo-card {
+      opacity: 0;
+      transform: translateY(72px) scale(0.88) rotateX(8deg);
+      transform-origin: top center;
+      animation: repo-card-enter 900ms cubic-bezier(0.26, 0.57, 0.12, 1.04) forwards;
+      animation-play-state: paused;
+    }
+
+    [data-repo-visible="true"] .repo-card {
+      animation-play-state: running;
+    }
   }
 }
 

@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { BRAND_BACKGROUND_COLOR } from "@/lib/theme";
 import "./tailwind.css";
 
 export const metadata: Metadata = {
@@ -12,14 +13,26 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: BRAND_BACKGROUND_COLOR },
+    { media: "(prefers-color-scheme: dark)", color: BRAND_BACKGROUND_COLOR },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">{children}</body>
+    <html lang="en" style={{ backgroundColor: BRAND_BACKGROUND_COLOR }}>
+      <body className="antialiased" style={{ backgroundColor: BRAND_BACKGROUND_COLOR }}>
+        {children}
+      </body>
     </html>
   );
 }
