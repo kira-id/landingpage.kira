@@ -53,6 +53,7 @@ export default function HeroSection() {
 
   const exploreOpacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
   const exploreY = useTransform(scrollYProgress, [0.1, 0.3], [24, 0]);
+  const bannerBackdropBlur = useTransform(scrollYProgress, [0, 0.12], ["blur(2px)", "blur(18px)"]);
 
   useEffect(() => {
     startHeadlineRotation(INITIAL_ROTATION_DELAY);
@@ -65,8 +66,14 @@ export default function HeroSection() {
       ref={sectionRef}
       className="relative z-10 flex min-h-screen items-center justify-center overflow-hidden px-4 pb-0 pt-16 text-zinc-100 sm:px-8 sm:pt-20 lg:px-16 lg:pt-24"
     >
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 hidden items-center justify-between bg-white/5 px-10 py-4 shadow-lg shadow-black/10 backdrop-blur-m  sm:flex">
-        <div className="flex items-center gap-3">
+      <motion.div
+        className="pointer-events-none fixed inset-x-0 top-0 z-50 flex w-full items-center justify-between gap-4 bg-white/5 px-4 py-4 shadow-lg shadow-black/10 backdrop-blur-m sm:px-10"
+        style={{
+          backdropFilter: bannerBackdropBlur,
+          WebkitBackdropFilter: bannerBackdropBlur,
+        }}
+      >
+        <div className="flex min-w-0 items-center gap-3">
           <Image
             src="/kira.svg"
             alt="Kira logo"
@@ -74,14 +81,14 @@ export default function HeroSection() {
             height={40}
             className="h-10 w-10 drop-shadow-xl"
           />
-          <span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/80">
+          <span className="truncate text-xs font-semibold uppercase tracking-[0.2em] text-white/80 max-w-[40vw] sm:max-w-none sm:tracking-[0.4em]">
             Kira.id
           </span>
         </div>
-        <span className="text-xs font-medium uppercase tracking-[0.3em] text-white/70">
+        <span className="truncate text-xs font-medium uppercase tracking-[0.18em] text-white/70 max-w-[45vw] text-right sm:max-w-none sm:tracking-[0.3em]">
           Open Source AGI Lab
         </span>
-      </div>
+      </motion.div>
 
       <motion.div className="pointer-events-auto relative z-10 mx-auto flex flex-col items-center gap-10 text-center">
         <h1 className="text-balance text-6xl font-semibold leading-tight text-zinc-50 sm:text-7xl md:text-8xl lg:text-9xl">
