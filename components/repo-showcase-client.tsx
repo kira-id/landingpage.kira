@@ -148,6 +148,8 @@ export function RepoShowcaseClient({
                   </span>
                   <a
                     href={repo.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-700"
                   >
                     View on GitHub

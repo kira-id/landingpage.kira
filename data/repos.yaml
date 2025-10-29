@@ -1,48 +1,32 @@
-- name: kiraid/intelligence-core
-  description: Composable AGI runtime with modular cognition loops, streaming memory, and GPU-aware task execution.
-  stars: 4821
-  forks: 312
+- name: kira-id/landingpage.kira
+  description: A self-hosted platform to try different kinds of coding agent tools without setting up much environment. Explore and experiment with AI-powered development assistants in a ready-to-use setup.
+  stars: 2
+  forks: 0
   language: TypeScript
   highlight: Stable
-  href: https://github.com/kiraid/intelligence-core
-  tags: [Agents, Runtime, GPU]
-- name: kiraid/observatory
-  description: Observability suite capturing reasoning traces, evaluator feedback, and safety gates for agent runs.
-  stars: 2894
-  forks: 154
-  language: Rust
-  highlight: New
-  href: https://github.com/kiraid/observatory
-  tags: [Tracing, Monitoring, Safety]
-- name: kiraid/demos
-  description: Library of production-ready demos showcasing autonomous research copilots and self-hosting recipes.
-  stars: 3512
-  forks: 428
-  language: Python
-  highlight: Trending
-  href: https://github.com/kiraid/demos
-  tags: [Playbooks, Self-hosting, Templates]
-- name: kiraid/model-garden
-  description: Unified adapters for open foundation and distilled models with evaluation harnesses and guardrails.
-  stars: 1975
-  forks: 203
-  language: Go
-  highlight: Major Update
-  href: https://github.com/kiraid/model-garden
-  tags: [Models, Adapters, Evaluation]
-- name: kiraid/edge-runtime
-  description: Inference stack tuned for edge accelerators with automatic quantization and offline synchronization.
-  stars: 1689
-  forks: 186
-  language: C++
-  highlight: Edge Ready
-  href: https://github.com/kiraid/edge-runtime
-  tags: [Edge, Hardware, Optimization]
-- name: kiraid/playground
-  description: Interactive playground for testing prompts, routing policies, and shared team annotations.
-  stars: 2741
-  forks: 267
+  href: https://github.com/kira-id/landingpage.kira
+  tags: ["TypeScript", "AI", "Platform"]
+- name: kira-id/cua.kira
+  description: Cua.kira is a self-hosted AI desktop agent that automates computer tasks through natural language commands, operating within a containerized Linux desktop environment. It provides seamless automation for daily workflows and complex operations.
+  stars: 2
+  forks: 0
   language: TypeScript
-  highlight: Community Favorite
-  href: https://github.com/kiraid/playground
-  tags: [UX, Prompts, Collaboration]
+  highlight: New
+  href: https://github.com/kira-id/cua.kira
+  tags: ["TypeScript", "AI", "Automation"]
+- name: kira-id/mcp-hub.kira
+  description: A hub for managing and deploying Model Context Protocol (MCP) servers with monitoring, logging, and easy configuration. Streamline your AI agent ecosystem with centralized server orchestration.
+  stars: 1
+  forks: 0
+  language: Shell
+  highlight: Trending
+  href: https://github.com/kira-id/mcp-hub.kira
+  tags: ["Shell", "MCP", "AI"]
+- name: kira-id/mcp-hub
+  description: A centralized manager for Model Context Protocol (MCP) servers with dynamic server management, monitoring, and performance metrics. Enable scalable and reliable AI agent deployments.
+  stars: 0
+  forks: 0
+  language: JavaScript
+  highlight: Edge Ready
+  href: https://github.com/kira-id/mcp-hub
+  tags: ["JavaScript", "MCP", "Management"]
