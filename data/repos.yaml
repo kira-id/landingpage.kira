@@ -1,32 +1,4 @@
-- name: kira-id/landingpage.kira
-  description: A self-hosted platform to try different kinds of coding agent tools without setting up much environment. Explore and experiment with AI-powered development assistants in a ready-to-use setup.
-  stars: 2
-  forks: 0
-  language: TypeScript
-  highlight: Stable
-  href: https://github.com/kira-id/landingpage.kira
-  tags: ["TypeScript", "AI", "Platform"]
-- name: kira-id/cua.kira
-  description: Cua.kira is a self-hosted AI desktop agent that automates computer tasks through natural language commands, operating within a containerized Linux desktop environment. It provides seamless automation for daily workflows and complex operations.
-  stars: 2
-  forks: 0
-  language: TypeScript
-  highlight: New
-  href: https://github.com/kira-id/cua.kira
-  tags: ["TypeScript", "AI", "Automation"]
-- name: kira-id/mcp-hub.kira
-  description: A hub for managing and deploying Model Context Protocol (MCP) servers with monitoring, logging, and easy configuration. Streamline your AI agent ecosystem with centralized server orchestration.
-  stars: 1
-  forks: 0
-  language: Shell
-  highlight: Trending
-  href: https://github.com/kira-id/mcp-hub.kira
-  tags: ["Shell", "MCP", "AI"]
-- name: kira-id/mcp-hub
-  description: A centralized manager for Model Context Protocol (MCP) servers with dynamic server management, monitoring, and performance metrics. Enable scalable and reliable AI agent deployments.
-  stars: 0
-  forks: 0
-  language: JavaScript
-  highlight: Edge Ready
-  href: https://github.com/kira-id/mcp-hub
-  tags: ["JavaScript", "MCP", "Management"]
+- kira-id/cua.kira
+- kira-id/mcp-hub.kira
+- kira-id/mcp-hub
+- kira-id/landingpage.kira
